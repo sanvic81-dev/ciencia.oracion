@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>La Ciencia de la Oración · INNOVA PRO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0717;
+  --bg2:#150b28;
+  --surface:#1b1033;
+  --surface2:#241541;
+  --text:#f4eefe;
+  --text-dim:#bfb0d9;
+  --primary:#c44b9c;
+  --accent:#7c3aed;
+  --gold:#f0c869;
+  --border:rgba(255,255,255,0.08);
+  --shadow: 0 12px 40px rgba(124,58,237,0.18);
+  --radius-card:18px;
+  --radius-btn:50px;
+}
+[data-theme="light"]{
+  --bg:#fbf6ff;
+  --bg2:#f3e9ff;
+  --surface:#ffffff;
+  --surface2:#f6effe;
+  --text:#2a1840;
+  --text-dim:#6b5a85;
+  --border:rgba(124,58,237,0.12);
+  --shadow: 0 10px 30px rgba(124,58,237,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+html,body{font-family:'Manrope',sans-serif;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  transition:background .4s ease,color .4s ease;
+  position:relative;
+}
+button,.clickable{touch-action:manipulation;cursor:pointer;}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;font-weight:700;letter-spacing:.01em;}
+
+/* ===== Starfield background ===== */
+#stars{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(124,58,237,0.25), transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(196,75,156,0.2), transparent 50%),
+    var(--bg);
+  transition:background .4s ease;
+}
+[data-theme="light"] #stars{
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(124,58,237,0.08), transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(196,75,156,0.08), transparent 50%),
+    var(--bg);
+}
+.star{
+  position:absolute;border-radius:50%;background:#fff;
+  opacity:.6;animation:twinkle 4s ease-in-out infinite;
+}
+[data-theme="light"] .star{display:none;}
+@keyframes twinkle{0%,100%{opacity:.15;}50%{opacity:.9;}}
+
+/* ===== Layout ===== */
+.app{
+  position:relative;z-index:1;
+  display:flex;
+  min-height:100vh;
+}
+.sidebar{
+  width:240px;flex-shrink:0;
+  background:rgba(27,16,51,0.6);
+  backdrop-filter:blur(12px);
+  border-right:1px solid var(--border);
+  padding:28px 18px;
+  display:flex;flex-direction:column;gap:6px;
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;
+}
+[data-theme="light"] .sidebar{background:rgba(255,255,255,0.7);}
+.brand{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;font-weight:700;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:4px;line-height:1.2;
+}
+.brand-sub{font-size:.7rem;color:var(--text-dim);letter-spacing:.18em;text-transform:uppercase;margin-bottom:22px;}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 14px;border-radius:14px;
+  color:var(--text-dim);font-weight:600;font-size:.92rem;
+  border:none;background:transparent;text-align:left;width:100%;
+  transition:all .2s ease;min-height:48px;
+}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  color:#fff;box-shadow:var(--shadow);
+}
+.nav-icon{font-size:1.15rem;width:24px;text-align:center;}
+
+.progress-wrap{margin-top:auto;padding-top:18px;border-top:1px solid var(--border);}
+.progress-label{font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px;display:flex;justify-content:space-between;}
+.progress-bar-bg{height:8px;border-radius:50px;background:var(--surface2);overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--primary),var(--accent),var(--gold));transition:width .6s ease;}
+
+.theme-toggle{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:14px;padding:12px;border-radius:var(--radius-btn);
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);font-weight:700;font-size:.85rem;min-height:48px;
+}
+
+.main{
+  flex:1;min-width:0;
+  padding:30px clamp(18px,4vw,56px) 110px;
+}
+.view{display:none;animation:fadeUp .5s ease;}
+.view.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* ===== Welcome ===== */
+#welcome{
+  position:fixed;inset:0;z-index:50;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 30%, rgba(124,58,237,0.35), transparent 60%), var(--bg);
+  text-align:center;padding:24px;
+  transition:opacity .6s ease, visibility .6s ease;
+}
+#welcome.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+.welcome-inner{max-width:560px;}
+.welcome-glow{
+  width:120px;height:120px;border-radius:50%;margin:0 auto 28px;
+  background:radial-gradient(circle, var(--primary), var(--accent) 70%, transparent);
+  filter:blur(2px);
+  animation:pulseGlow 3.5s ease-in-out infinite;
+}
+@keyframes pulseGlow{0%,100%{transform:scale(1);opacity:.85;}50%{transform:scale(1.15);opacity:1;}}
+.welcome-eyebrow{font-size:.78rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-weight:700;}
+.welcome-title{font-size:clamp(2.2rem,7vw,3.6rem);line-height:1.1;margin-bottom:18px;}
+.welcome-title span{
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.welcome-quote{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.25rem;
+  color:var(--text-dim);margin-bottom:34px;line-height:1.5;
+  border-left:3px solid var(--primary);padding-left:16px;text-align:left;
+  display:inline-block;
+}
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  color:#fff;border:none;border-radius:var(--radius-btn);
+  padding:16px 38px;font-size:1.02rem;font-weight:800;
+  box-shadow:var(--shadow);min-height:54px;
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.btn-primary:active{transform:scale(.97);}
+
+/* ===== Cards & sections ===== */
+.section-eyebrow{font-size:.75rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;}
+.section-title{font-size:clamp(1.7rem,4vw,2.4rem);margin-bottom:6px;}
+.section-desc{color:var(--text-dim);max-width:640px;margin-bottom:26px;line-height:1.6;}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-card);box-shadow:var(--shadow);
+  padding:22px;margin-bottom:16px;
+}
+.concept-card{cursor:pointer;}
+.concept-head{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.concept-head h3{font-size:1.15rem;}
+.concept-arrow{font-size:1.3rem;color:var(--primary);transition:transform .3s ease;flex-shrink:0;}
+.concept-card.open .concept-arrow{transform:rotate(180deg);}
+.concept-body{
+  max-height:0;overflow:hidden;transition:max-height .4s ease, opacity .3s ease;
+  opacity:0;color:var(--text-dim);line-height:1.7;
+}
+.concept-card.open .concept-body{margin-top:14px;opacity:1;}
+
+.quote-card{
+  border-left:4px solid var(--primary);
+  background:var(--surface);border-radius:var(--radius-card);
+  padding:20px 22px;margin:18px 0;box-shadow:var(--shadow);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.18rem;
+  line-height:1.6;
+}
+.quote-attr{display:block;margin-top:10px;font-family:'Manrope',sans-serif;font-style:normal;font-size:.8rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+
+.reflect-box{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);
+  padding:20px;margin:18px 0;box-shadow:var(--shadow);
+}
+.reflect-box label{display:block;font-weight:700;margin-bottom:10px;line-height:1.5;}
+.reflect-box textarea{
+  width:100%;min-height:90px;border-radius:12px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text);padding:12px 14px;font-family:inherit;
+  font-size:.95rem;resize:vertical;
+}
+.save-note{
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+  background:var(--surface2);border:1px solid var(--border);color:var(--text);
+  border-radius:var(--radius-btn);padding:10px 22px;font-weight:700;font-size:.85rem;min-height:44px;
+}
+.saved-flash{font-size:.78rem;color:var(--gold);margin-left:10px;opacity:0;transition:opacity .3s;}
+.saved-flash.show{opacity:1;}
+
+.checklist{display:flex;flex-direction:column;gap:10px;margin:18px 0;}
+.check-item{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:14px 16px;min-height:48px;box-shadow:var(--shadow);
+}
+.check-box{
+  width:24px;height:24px;border-radius:7px;border:2px solid var(--primary);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;font-weight:900;color:#fff;transition:all .2s ease;
+}
+.check-item.done .check-box{background:linear-gradient(135deg,var(--primary),var(--accent));}
+.check-item.done span.check-text{text-decoration:line-through;color:var(--text-dim);}
+
+.practice-steps{display:flex;flex-direction:column;gap:12px;margin:18px 0;}
+.practice-step{
+  display:flex;gap:14px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-card);padding:16px 18px;box-shadow:var(--shadow);align-items:flex-start;
+}
+.step-num{
+  flex-shrink:0;width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;
+}
+.step-text{line-height:1.6;color:var(--text-dim);}
+.step-text b{color:var(--text);}
+
+/* chapter grid + reading */
+.chapter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:8px;}
+.chapter-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);
+  padding:20px;cursor:pointer;box-shadow:var(--shadow);transition:transform .2s ease;
+  display:flex;flex-direction:column;gap:8px;min-height:48px;
+}
+.chapter-card:active{transform:scale(.98);}
+.chapter-num{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--primary);font-weight:700;}
+.chapter-card h3{font-size:1.05rem;line-height:1.3;}
+.chapter-card p{font-size:.82rem;color:var(--text-dim);}
+.chapter-status{font-size:.72rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+
+.reading-panel{display:none;}
+.reading-panel.open{display:block;}
+.back-btn{
+  display:inline-flex;align-items:center;gap:8px;background:var(--surface2);
+  border:1px solid var(--border);color:var(--text);border-radius:var(--radius-btn);
+  padding:10px 20px;font-weight:700;font-size:.85rem;margin-bottom:18px;min-height:44px;
+}
+.reading-content{line-height:1.8;color:var(--text-dim);}
+.reading-content h4{color:var(--text);margin:22px 0 8px;font-size:1.25rem;}
+.reading-content p{margin-bottom:12px;}
+.reading-content ul{margin:0 0 12px 20px;}
+
+/* test */
+.test-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);padding:22px;box-shadow:var(--shadow);margin-bottom:16px;}
+.test-q{font-weight:700;margin-bottom:12px;}
+.test-options{display:flex;flex-direction:column;gap:10px;}
+.test-opt{
+  background:var(--surface2);border:1px solid var(--border);border-radius:14px;
+  padding:13px 16px;text-align:left;color:var(--text);font-size:.92rem;min-height:48px;
+  transition:all .2s ease;
+}
+.test-opt.selected{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-color:transparent;}
+.test-result{display:none;text-align:center;padding:30px 20px;}
+.test-result.show{display:block;}
+.test-result h3{font-size:1.6rem;margin-bottom:10px;background:linear-gradient(135deg,var(--primary),var(--accent),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+/* journal */
+.journal-entry{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px 18px;margin-bottom:10px;box-shadow:var(--shadow);}
+.journal-date{font-size:.72rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-dim);}
+.empty-state .emoji{font-size:2.5rem;display:block;margin-bottom:10px;}
+
+/* tracker */
+.tracker-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:18px 0;}
+.tracker-day{
+  aspect-ratio:1;border-radius:12px;background:var(--surface2);border:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:.78rem;font-weight:700;color:var(--text-dim);min-height:48px;transition:all .2s ease;
+}
+.tracker-day.done{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-color:transparent;}
+.tracker-day .d-num{font-size:1rem;}
+.streak-banner{
+  display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(196,75,156,.18),rgba(124,58,237,.18));
+  border:1px solid var(--border);border-radius:var(--radius-card);padding:18px 20px;margin-bottom:18px;
+}
+.streak-num{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--accent),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+/* frases de sanación */
+.spirit-btn, .moment-btn{
+  background:var(--surface2);border:1px solid var(--border);color:var(--text);
+  border-radius:var(--radius-btn);padding:10px 18px;font-weight:700;font-size:.85rem;
+  min-height:44px;transition:all .2s ease;
+}
+.spirit-btn.active,.moment-btn.active{
+  background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-color:transparent;
+  box-shadow:var(--shadow);
+}
+.frase-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);
+  padding:20px 22px;margin-bottom:14px;box-shadow:var(--shadow);
+  animation:fadeUp .35s ease;
+}
+.frase-label{font-size:.72rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.frase-text{
+  font-family:'Cormorant Garamond',serif;font-size:1.18rem;line-height:1.6;
+  color:var(--text);margin-bottom:14px;
+}
+.frase-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.fav-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--surface2);border:1px solid var(--border);color:var(--text);
+  border-radius:var(--radius-btn);padding:9px 18px;font-weight:700;font-size:.82rem;min-height:44px;
+  transition:all .2s ease;
+}
+.fav-btn.saved{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-color:transparent;}
+.fav-card{
+  background:var(--surface);border-left:4px solid var(--primary);border-radius:var(--radius-card);
+  padding:16px 18px;margin-bottom:10px;box-shadow:var(--shadow);
+}
+.fav-card .fav-meta{font-size:.72rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.fav-card .fav-t{font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.5;margin-bottom:8px;}
+.del-fav{background:none;border:none;color:var(--text-dim);font-size:.8rem;cursor:pointer;min-height:36px;padding:4px 10px;}
+
+/* achievements */
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;}
+.badge{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);
+  padding:20px 12px;text-align:center;box-shadow:var(--shadow);opacity:.35;transition:all .4s ease;
+}
+.badge.unlocked{opacity:1;transform:scale(1.02);}
+.badge .b-icon{font-size:2.2rem;margin-bottom:8px;display:block;}
+.badge h4{font-size:.9rem;margin-bottom:4px;}
+.badge p{font-size:.74rem;color:var(--text-dim);}
+
+/* mobile bottom nav */
+.bottom-nav{display:none;}
+@media (max-width:880px){
+  .sidebar{
+    position:fixed;bottom:0;left:0;right:0;top:auto;width:100%;height:auto;
+    flex-direction:row;justify-content:space-around;padding:8px 4px;
+    border-right:none;border-top:1px solid var(--border);
+    overflow-x:auto;z-index:40;gap:2px;
+  }
+  .brand,.brand-sub,.progress-wrap,.theme-toggle{display:none;}
+  .nav-item{flex-direction:column;font-size:.62rem;padding:8px 6px;gap:4px;min-width:62px;flex-shrink:0;border-radius:12px;}
+  .nav-icon{font-size:1.25rem;width:auto;}
+  .main{padding:20px 16px 90px;}
+  .top-progress{
+    display:flex;align-items:center;gap:10px;margin-bottom:18px;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-btn);
+    padding:10px 16px;box-shadow:var(--shadow);
+  }
+  .top-progress .progress-bar-bg{flex:1;}
+  .top-progress span{font-size:.74rem;color:var(--text-dim);font-weight:700;white-space:nowrap;}
+}
+.top-progress{display:none;}
+@media (max-width:880px){.top-progress{display:flex;}}
+
+@media (min-width:881px){
+  .desktop-theme{display:flex;}
+}
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<!-- WELCOME -->
+<div id="welcome">
+  <div class="welcome-inner">
+    <div class="welcome-glow"></div>
+    <div class="welcome-eyebrow">Innova Pro · Bienestar</div>
+    <h1 class="welcome-title">La Ciencia de <span>la Oración</span></h1>
+    <p class="welcome-quote">"Cambia tus pensamientos y cambiarás tu mundo."</p>
+    <div>
+      <button class="btn-primary clickable" id="startBtn" onclick="closeWelcome()">Empezar mi práctica →</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <!-- SIDEBAR / BOTTOM NAV -->
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">La Ciencia<br>de la Oración</div>
+    <div class="brand-sub">Innova Pro</div>
+
+    <button class="nav-item clickable active" data-view="inicio" onclick="goTo('inicio')"><span class="nav-icon">🏠</span><span>Inicio</span></button>
+    <button class="nav-item clickable" data-view="lectura" onclick="goTo('lectura')"><span class="nav-icon">📖</span><span>Capítulos</span></button>
+    <button class="nav-item clickable" data-view="conceptos" onclick="goTo('conceptos')"><span class="nav-icon">🗂️</span><span>Conceptos</span></button>
+    <button class="nav-item clickable" data-view="citas" onclick="goTo('citas')"><span class="nav-icon">💬</span><span>Citas</span></button>
+    <button class="nav-item clickable" data-view="test" onclick="goTo('test')"><span class="nav-icon">🎯</span><span>Test</span></button>
+    <button class="nav-item clickable" data-view="diario" onclick="goTo('diario')"><span class="nav-icon">📔</span><span>Diario</span></button>
+    <button class="nav-item clickable" data-view="ritual" onclick="goTo('ritual')"><span class="nav-icon">✅</span><span>Mi ritual</span></button>
+    <button class="nav-item clickable" data-view="tracker" onclick="goTo('tracker')"><span class="nav-icon">📊</span><span>Seguimiento</span></button>
+    <button class="nav-item clickable" data-view="frases" onclick="goTo('frases')"><span class="nav-icon">🌿</span><span>Frases</span></button>
+    <button class="nav-item clickable" data-view="logros" onclick="goTo('logros')"><span class="nav-icon">🏆</span><span>Logros</span></button>
+
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Progreso general</span><span id="progressPct">0%</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <button class="theme-toggle clickable desktop-theme" onclick="toggleTheme()"><span id="themeIcon">🌙</span><span id="themeLabel">Modo noche</span></button>
+  </nav>
+
+  <main class="main">
+
+    <!-- TOP PROGRESS (mobile) -->
+    <div class="top-progress">
+      <span id="progressPctMobile">0%</span>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFillMobile" style="width:0%"></div></div>
+      <button onclick="toggleTheme()" class="clickable" style="background:none;border:none;font-size:1.1rem;min-height:44px;min-width:44px;color:var(--text);">🌙</button>
+    </div>
+
+    <!-- INICIO -->
+    <section class="view active" id="view-inicio">
+      <div class="section-eyebrow">Bienvenida</div>
+      <h2 class="section-title">Tu puente entre la fe, la mente y la neurociencia</h2>
+      <p class="section-desc">Un programa de 21 días para convertir la oración y las afirmaciones en una práctica neurológica real, sin dogmas, basada en el "hábito del minuto" de Frank Laubach y el pensamiento dirigido de Norman Vincent Peale.</p>
+
+      <div class="quote-card">
+        No se trata de orar más tiempo, sino de orar más seguido.
+        <span class="quote-attr">— Inspirado en Frank Laubach</span>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:10px;">¿Por dónde empezar?</h3>
+        <div class="practice-steps" style="margin:0;">
+          <div class="practice-step">
+            <div class="step-num">1</div>
+            <div class="step-text"><b>Leé el Capítulo 1</b> para entender la base científica: tu cerebro es entrenable.</div>
+          </div>
+          <div class="practice-step">
+            <div class="step-num">2</div>
+            <div class="step-text"><b>Armá tu ritual mínimo</b> en la sección "Mi ritual": frase ancla, pausas, visualización y gratitud nocturna.</div>
+          </div>
+          <div class="practice-step">
+            <div class="step-num">3</div>
+            <div class="step-text"><b>Registrá tu día</b> en el Seguimiento para construir tu racha de 21 días.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LECTURA -->
+    <section class="view" id="view-lectura">
+      <div class="section-eyebrow">Lectura</div>
+      <h2 class="section-title">Capítulos del libro</h2>
+      <p class="section-desc">Tocá un capítulo para leerlo completo. Se marca como leído automáticamente y suma a tu progreso.</p>
+
+      <div class="chapter-grid" id="chapterGrid"></div>
+
+      <div class="reading-panel" id="readingPanel">
+        <button class="back-btn clickable" onclick="closeReading()">← Volver a capítulos</button>
+        <div class="card">
+          <div class="reading-content" id="readingContent"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONCEPTOS -->
+    <section class="view" id="view-conceptos">
+      <div class="section-eyebrow">Tarjetas</div>
+      <h2 class="section-title">Conceptos clave</h2>
+      <p class="section-desc">Las ideas centrales del libro, explicadas en una idea por tarjeta. Tocá para expandir.</p>
+      <div id="conceptsList"></div>
+    </section>
+
+    <!-- CITAS -->
+    <section class="view" id="view-citas">
+      <div class="section-eyebrow">Inspiración</div>
+      <h2 class="section-title">Citas destacadas</h2>
+      <p class="section-desc">Frases del libro para volver a leer cuando necesites un recordatorio.</p>
+      <div id="quotesList"></div>
+    </section>
+
+    <!-- TEST -->
+    <section class="view" id="view-test">
+      <div class="section-eyebrow">Autoconocimiento</div>
+      <h2 class="section-title">¿Cuál es tu punto de partida?</h2>
+      <p class="section-desc">Respondé estas preguntas para descubrir qué capítulo y práctica te conviene priorizar esta semana.</p>
+      <div id="testContainer"></div>
+      <div class="test-result" id="testResult">
+        <h3 id="testResultTitle"></h3>
+        <p id="testResultText" style="color:var(--text-dim);line-height:1.7;"></p>
+        <button class="btn-primary clickable" style="margin-top:18px;" onclick="resetTest()">Volver a hacer el test</button>
+      </div>
+    </section>
+
+    <!-- DIARIO -->
+    <section class="view" id="view-diario">
+      <div class="section-eyebrow">Reflexión</div>
+      <h2 class="section-title">Diario de gratitud y reflexión</h2>
+      <p class="section-desc">Escribí libremente. Cada entrada se guarda en tu dispositivo.</p>
+
+      <div class="reflect-box">
+        <label for="journalText">¿Qué pasó hoy que merece tu atención? (algo concreto por lo que sientas gratitud, o un pensamiento que quieras observar)</label>
+        <textarea id="journalText" placeholder="Hoy estoy agradecido/a por..."></textarea>
+        <button class="save-note clickable" onclick="saveJournal()">Guardar entrada <span class="saved-flash" id="journalFlash">✓ Guardado</span></button>
+      </div>
+
+      <h3 style="margin:24px 0 12px;font-size:1.1rem;">Entradas anteriores</h3>
+      <div id="journalList"></div>
+    </section>
+
+    <!-- RITUAL -->
+    <section class="view" id="view-ritual">
+      <div class="section-eyebrow">Capítulo 10</div>
+      <h2 class="section-title">Diseñá tu ritual diario mínimo</h2>
+      <p class="section-desc">Cuatro elementos breves, distribuidos en tu día. Marcá lo que vas cumpliendo hoy.</p>
+
+      <div class="reflect-box">
+        <label>1. Tu frase ancla al despertar (1 a 4 palabras)</label>
+        <textarea id="anchorPhrase" style="min-height:50px;" placeholder="Ej: 'Estoy aquí', 'Un paso a la vez', 'Calma'"></textarea>
+        <button class="save-note clickable" onclick="saveAnchor()">Guardar frase <span class="saved-flash" id="anchorFlash">✓ Guardado</span></button>
+      </div>
+
+      <div class="checklist" id="ritualChecklist"></div>
+    </section>
+
+    <!-- TRACKER -->
+    <section class="view" id="view-tracker">
+      <div class="section-eyebrow">Constancia</div>
+      <h2 class="section-title">Tu programa de 21 días</h2>
+      <p class="section-desc">Cumplir tu ritual diario (los 4 ítems) cuenta como un día completo. La frecuencia, no la intensidad, es lo que reconfigura tu cerebro.</p>
+
+      <div class="streak-banner">
+        <div class="streak-num" id="streakNum">0</div>
+        <div>
+          <div style="font-weight:800;">días de racha</div>
+          <div style="color:var(--text-dim);font-size:.85rem;">Días totales completados: <span id="totalDays">0</span> / 21</div>
+        </div>
+      </div>
+
+      <h3 style="margin-bottom:10px;font-size:1rem;">Marcá hoy como completado al cerrar tu ritual</h3>
+      <button class="btn-primary clickable" onclick="markToday()" id="markTodayBtn">Marcar hoy ✓</button>
+
+      <h3 style="margin:26px 0 10px;font-size:1rem;">Últimos 21 días</h3>
+      <div class="tracker-grid" id="trackerGrid"></div>
+    </section>
+
+    <!-- FRASES DE SANACIÓN -->
+    <section class="view" id="view-frases">
+      <div class="section-eyebrow">Frases de Sanación · Norman Vincent Peale</div>
+      <h2 class="section-title">Elegí tus frases del día</h2>
+      <p class="section-desc">Seleccioná el momento del día y tu palabra espiritual. Las frases se adaptan a vos. Guardá tus favoritas para volver a ellas cuando las necesités.</p>
+
+      <!-- Personalizador espiritual -->
+      <div class="card" style="margin-bottom:20px;">
+        <div style="font-weight:800;margin-bottom:12px;font-size:.95rem;">1. ¿Con qué palabra te identificás?</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;" id="spiritSelector">
+          <button class="spirit-btn clickable active" data-word="Dios" onclick="setSpiritWord('Dios',this)">Dios</button>
+          <button class="spirit-btn clickable" data-word="Universo" onclick="setSpiritWord('Universo',this)">Universo</button>
+          <button class="spirit-btn clickable" data-word="Cristo" onclick="setSpiritWord('Cristo',this)">Cristo</button>
+          <button class="spirit-btn clickable" data-word="La Vida" onclick="setSpiritWord('La Vida',this)">La Vida</button>
+          <button class="spirit-btn clickable" data-word="La Fuente" onclick="setSpiritWord('La Fuente',this)">La Fuente</button>
+          <button class="spirit-btn clickable" data-word="La Luz" onclick="setSpiritWord('La Luz',this)">La Luz</button>
+        </div>
+      </div>
+
+      <!-- Selector de momento -->
+      <div class="card" style="margin-bottom:24px;">
+        <div style="font-weight:800;margin-bottom:12px;font-size:.95rem;">2. ¿En qué momento estás?</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;" id="momentSelector">
+          <button class="moment-btn clickable active" data-moment="manana" onclick="setMoment('manana',this)">🌅 Mañana</button>
+          <button class="moment-btn clickable" data-moment="pausa" onclick="setMoment('pausa',this)">⏸️ Pausa</button>
+          <button class="moment-btn clickable" data-moment="obstaculos" onclick="setMoment('obstaculos',this)">💪 Obstáculos</button>
+          <button class="moment-btn clickable" data-moment="fe" onclick="setMoment('fe',this)">🙏 Fe</button>
+          <button class="moment-btn clickable" data-moment="autoestima" onclick="setMoment('autoestima',this)">💎 Autoestima</button>
+          <button class="moment-btn clickable" data-moment="abundancia" onclick="setMoment('abundancia',this)">✨ Abundancia</button>
+          <button class="moment-btn clickable" data-moment="noche" onclick="setMoment('noche',this)">🌙 Noche</button>
+        </div>
+      </div>
+
+      <!-- Frases del momento -->
+      <div id="frasesCards"></div>
+
+      <!-- Favoritas -->
+      <h3 style="margin:30px 0 14px;font-size:1.2rem;">⭐ Mis favoritas guardadas</h3>
+      <div id="favoritasList"></div>
+    </section>
+
+    <!-- LOGROS -->
+    <section class="view" id="view-logros">
+      <div class="section-eyebrow">Recompensas</div>
+      <h2 class="section-title">Logros y medallas</h2>
+      <p class="section-desc">Se desbloquean a medida que avanzás en tu práctica.</p>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ===================== DATA ===================== */
+const chapters = [
+  {
+    id:1,
+    title:"El puente entre fe y cerebro",
+    summary:"Por qué orar y afirmar tiene un correlato físico real.",
+    html:`
+      <h4>La idea central</h4>
+      <p>Durante siglos, orar fue visto como un acto puramente espiritual, separado del mundo físico. Sin embargo, décadas de investigación en neurociencia han comenzado a tender un puente entre ambos territorios.</p>
+      <p>Norman Vincent Peale sostenía que la mente que sostiene pensamientos de fe, calma y posibilidad transforma de manera tangible la forma en que la persona experimenta su realidad. Frank Laubach, por su parte, describía la oración no como un evento aislado, sino como un estado mental sostenido: una conversación continua que moldea, momento a momento, la disposición interior de quien la practica.</p>
+      <h4>La mente como territorio entrenable</h4>
+      <p>Pensá en el cerebro como un terreno cruzado por senderos. Cada pensamiento es un paso sobre ese terreno. Los pensamientos que repetimos con frecuencia —preocupación, autocrítica, o bien gratitud y calma— se convierten en caminos cada vez más marcados, más fáciles de recorrer, más automáticos.</p>
+      <p>Esto es el principio detrás de la <b>neuroplasticidad</b>: las neuronas que se activan juntas repetidamente fortalecen sus conexiones. La oración y las afirmaciones, vistas así, no son fórmulas mágicas: son entrenamiento direccional de la atención.</p>
+      <h4>La ciencia detrás</h4>
+      <p>La neuroplasticidad es la capacidad del cerebro de reorganizar sus conexiones neuronales a lo largo de la vida en respuesta a la experiencia, el aprendizaje y la repetición. No se trata de "pensar y listo": se trata de práctica sostenida que, con el tiempo, modifica patrones reales de activación cerebral.</p>
+      <h4>Sin dogma, con propósito</h4>
+      <p>Este libro no busca convencerte de una doctrina particular ni reducir la oración a un ejercicio de autoayuda vacío. Si venís de una tradición religiosa, encontrarás un lenguaje que probablemente resuene con prácticas que ya conocés. Si no practicás ninguna religión, encontrarás herramientas prácticas que no requieren creencia previa para comenzar a notar sus efectos.</p>
+      <h4>Práctica del capítulo</h4>
+      <p>Antes de avanzar al Capítulo 2, dedicá tres minutos a sentarte en silencio. No intentes "orar bien" ni "pensar positivo". Simplemente observá: ¿qué pensamientos aparecen con más frecuencia en tu mente en un día normal? No los juzgues, solo tomá nota mental. Esta observación es tu punto de partida.</p>
+    `
+  },
+  {
+    id:2,
+    title:"El poder de la palabra repetida",
+    summary:"Cómo construir afirmaciones honestas que reconfiguran respuestas automáticas.",
+    html:`
+      <h4>Repetición y memoria implícita</h4>
+      <p>La afirmación repetida es una de las prácticas más características del trabajo de Norman Vincent Peale: frases breves, formuladas en positivo, repetidas de manera consciente a lo largo del día.</p>
+      <p>La memoria humana no funciona como un archivo neutral. Existe una memoria explícita (hechos que recordamos conscientemente) y una memoria implícita (hábitos, asociaciones automáticas y respuestas emocionales que operan por debajo de la atención consciente).</p>
+      <p>Cuando repetís una frase como "puedo manejar esta situación con calma" en momentos de calma relativa —no solo en crisis—, estás fortaleciendo, en términos neurocognitivos, una asociación entre una situación desafiante y una respuesta interna de calma, de modo que esa asociación tenga más probabilidades de activarse automáticamente cuando la situación real ocurra.</p>
+      <h4>La ciencia detrás</h4>
+      <p>Estudios en condicionamiento y aprendizaje asociativo muestran que las respuestas emocionales pueden volverse más automáticas cuanto más se practican en condiciones de baja amenaza. Practicar una respuesta calmada cuando no hay crisis facilita que esa respuesta esté disponible cuando sí la hay, de forma similar a cómo un atleta entrena movimientos en condiciones controladas.</p>
+      <h4>La trampa del positivismo vacío</h4>
+      <p>Repetir "todo está bien" cuando algo claramente no está bien no es una afirmación útil: es una negación. La diferencia entre una afirmación efectiva y el positivismo tóxico no está en la positividad de las palabras, sino en su honestidad y su función.</p>
+      <p>No es lo mismo decir "no tengo ningún problema" que decir "tengo un problema, y tengo la capacidad de afrontarlo paso a paso". La primera frase cierra los ojos a la realidad; la segunda la reconoce y, a la vez, dirige la atención hacia la agencia personal.</p>
+      <h4>Cómo construir una afirmación efectiva</h4>
+      <p>Una afirmación con base sólida comparte tres características:</p>
+      <ul>
+        <li><b>Específica:</b> se refiere a una situación o capacidad concreta, no a una promesa vaga de "éxito ilimitado".</li>
+        <li><b>Creíble:</b> algo que vos puedas, al menos en parte, reconocer como posible.</li>
+        <li><b>En presente o en proceso:</b> "estoy aprendiendo a...", "puedo...", "tengo la capacidad de...", en lugar de una negación disfrazada ("ya no tengo miedo").</li>
+      </ul>
+      <p>Ejemplo frente a una entrevista de trabajo: en vez de "no estoy nervioso/a", una afirmación más efectiva es "me preparé para esto, y puedo hablar con calma incluso si siento algo de nervios".</p>
+      <h4>Práctica del capítulo</h4>
+      <p>Elegí una situación que te genere cierta tensión esta semana (una conversación, una tarea, una decisión). Escribí una afirmación breve siguiendo la estructura: <b>"Tengo [emoción/dificultad real], y al mismo tiempo tengo [recurso o capacidad]"</b>. Repetila en voz baja dos o tres veces al día, especialmente en momentos tranquilos, no solo justo antes del momento difícil.</p>
+    `
+  },
+  {
+    id:3,
+    title:"La oración como entrenamiento mental",
+    summary:'El "hábito del minuto" de Frank Laubach: frecuencia por encima de duración.',
+    html:`
+      <h4>El experimento de Laubach</h4>
+      <p>Frank Laubach se preguntó: ¿qué pasaría si una persona intentara mantener su mente orientada hacia algo más grande que sí misma —ya se llame Dios, propósito, presencia o conciencia ampliada— no solo durante momentos formales de oración, sino a lo largo de toda la jornada, en intervalos breves y frecuentes?</p>
+      <p>A esta práctica la llamó <b>"el hábito del minuto"</b>: en lugar de reservar la oración para un momento largo y aislado del día, Laubach proponía volver la atención, durante unos segundos, una y otra vez, a lo largo de las horas.</p>
+      <h4>Frecuencia versus duración</h4>
+      <p>Un hábito no se forma principalmente por la intensidad de una sola repetición, sino por la frecuencia y consistencia de repeticiones más breves a lo largo del tiempo. Esto explica por qué una sesión larga de meditación una vez por semana suele tener un impacto distinto —y a menudo menor en términos de cambio de hábito— que breves momentos de atención plena practicados varias veces al día.</p>
+      <h4>La ciencia detrás</h4>
+      <p>La investigación sobre formación de hábitos sugiere que la consistencia y la frecuencia del contexto en que se realiza una conducta son factores más determinantes para automatizarla que la duración de cada repetición individual. Microprácticas frecuentes pueden, con el tiempo, volverse tan o más efectivas que sesiones largas y esporádicas.</p>
+      <h4>Anclar la práctica a momentos cotidianos</h4>
+      <p>El "hábito del minuto" no depende de encontrar tiempo adicional en el día. Se trata de aprovechar transiciones que ya existen: esperar que cargue una página web, el tiempo en una fila, los segundos antes de que arranque una reunión, el trayecto entre una habitación y otra.</p>
+      <p>Estos "espacios en blanco" suelen llenarse, casi automáticamente, con distracción. La propuesta es ocupar algunos de ellos, de manera intencional, con un breve regreso a un pensamiento, frase o intención que te ancle.</p>
+      <h4>Qué "anclar" significa en la práctica</h4>
+      <p>Anclar puede tomar muchas formas: una palabra única ("presencia", "gracias", "calma"), una pregunta breve ("¿qué necesito soltar ahora?"), o una imagen mental simple (una luz, un horizonte, una sensación de apoyo). Lo importante no es la forma específica, sino la función: interrumpir, por un instante, el piloto automático y reorientar la atención.</p>
+      <h4>Práctica del capítulo</h4>
+      <p>Elegí una palabra o frase breve (de 1 a 4 palabras) que represente el estado que querés cultivar (por ejemplo: "calma", "estoy aquí", "un paso a la vez"). Identificá tres momentos de transición que ya ocurren en tu día (al sentarte frente a la computadora, al subir a un vehículo, al lavarte las manos). Cada vez que ocurra esa transición, repetí mentalmente tu palabra o frase una sola vez, sin forzar ninguna sensación particular.</p>
+    `
+  },
+  {
+    id:4,
+    title:"Visualizar es construir",
+    summary:"La imaginería mental comparte circuitos con la percepción y la acción reales.",
+    html:`
+      <h4>El papel de la imaginación</h4>
+      <p>Tanto Peale como Laubach hacían referencia al papel de la imaginación en la vida interior. Peale animaba a sus lectores a "formarse una imagen mental" de la situación deseada, sosteniéndola con claridad y constancia. Laubach describía momentos en los que sostenía mentalmente la imagen de una presencia acompañante, casi como un compañero invisible de camino.</p>
+      <h4>El cerebro no distingue del todo entre imaginar y hacer</h4>
+      <p>La investigación en neurociencia cognitiva ha revelado que la imaginería mental no es un proceso aislado de la "realidad": comparte, en buena medida, los mismos circuitos cerebrales que la percepción y la acción reales.</p>
+      <p>Cuando una persona imagina con detalle realizar un movimiento —por ejemplo, levantar un brazo— se activan áreas motoras del cerebro de forma similar, aunque no idéntica, a cuando realmente realiza ese movimiento. Este fenómeno, conocido como <b>imaginería motora</b>, es la base de técnicas utilizadas en rehabilitación física y en entrenamiento de alto rendimiento.</p>
+      <h4>Visualizar un proceso, no solo un resultado</h4>
+      <p>Una distinción útil es la diferencia entre visualizar un resultado final (por ejemplo, "tener éxito") y visualizar el proceso que lleva a ese resultado (los pasos concretos, las acciones, el esfuerzo sostenido). Visualizar el proceso tiende a ser más útil, porque entrena al cerebro en la secuencia real de acciones, no solo en la sensación de la meta cumplida.</p>
+      <h4>Práctica del capítulo</h4>
+      <div class="practice-steps" style="margin:14px 0;">
+        <div class="practice-step"><div class="step-num">1</div><div class="step-text">Elegí una situación próxima que te genere algo de tensión o incertidumbre.</div></div>
+        <div class="practice-step"><div class="step-num">2</div><div class="step-text">Cerrá los ojos durante un minuto y visualizá, paso a paso, el <b>proceso</b> de atravesarla con calma: cómo respirás, cómo te movés, qué decís.</div></div>
+        <div class="practice-step"><div class="step-num">3</div><div class="step-text">No te enfoques solo en el resultado final ("salió bien"), sino en el recorrido concreto que te lleva ahí.</div></div>
+      </div>
+    `
+  },
+  {
+    id:5,
+    title:"El lenguaje que usás contigo mismo",
+    summary:"Reescribir el diálogo interno sin negar lo que sentís.",
+    html:`
+      <h4>El costo de la autocrítica constante</h4>
+      <p>Cuando el diálogo interno está dominado por la autocrítica —"debería poder con esto", "algo está mal en mí", "otra vez lo mismo"— el sistema de respuesta al estrés del cuerpo tiende a activarse de forma similar a como lo haría frente a una amenaza externa. El cerebro no siempre distingue con claridad entre una amenaza del entorno y una amenaza generada por el propio pensamiento autocrítico repetido.</p>
+      <p>Esto no significa que la autocrítica sea "mala" en sí misma —puede tener una función útil al señalar áreas de mejora—. El problema surge cuando se convierte en el tono predominante y constante del diálogo interno, sin pausas, sin matices y sin compasión.</p>
+      <h4>Reescribiendo el guion, no negándolo</h4>
+      <p>Trabajar el lenguaje interno no significa "borrar" los pensamientos autocríticos: intentar suprimir un pensamiento suele, paradójicamente, hacerlo más persistente. Se trata, más bien, de notar el pensamiento, reconocerlo ("ahí está esa voz que dice que no soy capaz") y, después, ofrecer deliberadamente una segunda voz: una que sea honesta, pero más equilibrada.</p>
+      <p>Por ejemplo, frente al pensamiento "siempre arruino todo", una segunda voz no sería "nunca arruino nada" (que probablemente se sienta falso), sino algo como: "esta vez algo salió mal, y eso no define todo lo que hago. ¿Qué puedo aprender de esto?". Esta segunda voz no compite por "ganarle" a la primera; simplemente ofrece una alternativa más completa.</p>
+      <h4>Para reflexionar</h4>
+      <p>Durante un día típico, ¿qué tono predomina en tu diálogo interno? ¿Le hablarías así a alguien a quien querés ayudar?</p>
+      <h4>Práctica del capítulo</h4>
+      <p>La próxima vez que notes un pensamiento autocrítico fuerte, hacé una pausa breve y poné en palabras una "segunda voz": honesta sobre lo que pasó, pero que también reconozca un recurso, un aprendizaje o un próximo paso posible. No se trata de "ganarle" al pensamiento original, sino de ofrecerle compañía.</p>
+    `
+  },
+  {
+    id:6,
+    title:"Soltar el control: del esfuerzo a la entrega",
+    summary:'El "gesto de cierre" para lo que ya hiciste lo que podías hacer.',
+    html:`
+      <h4>Del esfuerzo a la entrega</h4>
+      <p>Hay una diferencia entre esforzarte por algo y quedarte "sosteniendo" mentalmente ese algo de manera indefinida: repasándolo, preocupándote, monitoreándolo, incluso después de haber hecho lo que estaba en tus manos hacer por ahora.</p>
+      <p>Tanto Peale como Laubach hablaban, de distintas maneras, de un momento de "entrega": un punto en el que, después del esfuerzo consciente, la persona deja de aferrarse al control total del resultado, sin que esto signifique dejar de importarle o dejar de actuar cuando corresponda actuar de nuevo.</p>
+      <h4>No es resignación, es un gesto repetible</h4>
+      <p>Soltar no es "dejar de importarle" ni resignarse a que algo salga mal. Es, más bien, un gesto que podés practicar: reconocer que hiciste lo que podías hacer por ahora, y permitirte una pausa en el monitoreo constante, sabiendo que podés volver a la acción cuando sea necesario.</p>
+      <h4>Práctica del capítulo</h4>
+      <p>Identificá algo que hayas estado "sosteniendo" mentalmente —repasando, preocupándote, monitoreando— sobre lo cual ya hiciste lo que podías hacer por ahora. Hacé una respiración profunda y, al exhalar, decí en silencio una frase breve de cierre (puede ser tan simple como "esto ya está hecho por ahora" o "lo dejo descansar"). No esperes que el pensamiento desaparezca por completo; el objetivo es practicar el gesto de cierre, incluso si el pensamiento regresa después —y simplemente repetir el gesto cuando eso ocurra.</p>
+    `
+  },
+  {
+    id:7,
+    title:"Gratitud como práctica neurológica",
+    summary:"Por qué nombrar agradecimientos específicos cambia tu actividad cerebral.",
+    html:`
+      <h4>Una práctica, no solo un sentimiento</h4>
+      <p>La gratitud ocupa un lugar central en casi todas las tradiciones de oración, y tanto Peale como Laubach la mencionan repetidamente como una de las prácticas más transformadoras: no como una cortesía hacia una fuerza externa, sino como un cambio en la orientación de la atención de quien la practica.</p>
+      <p>Durante mucho tiempo, la gratitud fue vista como una virtud moral deseable, pero "sin mayor relevancia funcional". La investigación en psicología positiva de las últimas décadas ha cambiado considerablemente esta percepción.</p>
+      <h4>Qué le ocurre al cerebro al practicar gratitud</h4>
+      <p>Practicar gratitud de manera regular —no como un sentimiento espontáneo ocasional, sino como un ejercicio deliberado de notar y nombrar aspectos específicos por los que uno se siente agradecido— se ha asociado, en distintos estudios, con cambios en la actividad de regiones cerebrales vinculadas al procesamiento de recompensa y a la regulación emocional.</p>
+      <h4>La ciencia detrás</h4>
+      <p>Investigaciones que utilizan registros de gratitud (llevar un diario donde se anota regularmente aquello por lo que uno se siente agradecido) han encontrado asociaciones con mejoras en el estado de ánimo y en la calidad del sueño, entre otros indicadores de bienestar.</p>
+      <h4>Gratitud específica, no genérica</h4>
+      <p>La diferencia entre "estoy agradecido por mi vida" y "estoy agradecido porque hoy alguien me ayudó a cargar algo pesado y eso me hizo sentir acompañado/a" no es solo de estilo: la especificidad parece estar relacionada con la fuerza del efecto. Nombrar lo concreto entrena la atención para notar lo concreto.</p>
+      <h4>Práctica del capítulo</h4>
+      <p>Al final del día, anotá (en la sección Diario de esta app) una o dos cosas específicas por las que te sientas agradecido/a hoy. No "mi familia" en general, sino algo puntual que ocurrió: una palabra, un gesto, un momento. Hacelo aunque el día haya sido difícil; la especificidad es lo que importa, no que el día haya sido "bueno".</p>
+    `
+  },
+  {
+    id:8,
+    title:"La comunidad invisible",
+    summary:"La sensación de acompañamiento, sea espiritual o comunitaria, activa circuitos de seguridad.",
+    html:`
+      <h4>La sensación de presencia</h4>
+      <p>Para muchas personas, la sensación de presencia que describen Peale y Laubach no proviene de personas físicamente presentes, sino de una relación con algo trascendente —Dios, el universo, una fuerza superior, según la tradición de cada persona—.</p>
+      <p>Desde una perspectiva científica, no es posible (ni es el propósito de este libro) afirmar o negar la naturaleza última de esa presencia. Lo que sí es posible observar es que la experiencia subjetiva de sentirse acompañado, sostenido o "visto" por algo más grande parece activar circuitos cerebrales relacionados con la seguridad y la conexión, de manera similar —aunque no idéntica— a como lo hace el apoyo de otra persona.</p>
+      <p>Esto no reduce la experiencia espiritual a "solo" un efecto cerebral, del mismo modo que decir que el amor involucra ciertas hormonas no reduce el amor a "solo" química. Simplemente reconoce que estas experiencias tienen un correlato físico que la ciencia puede observar, sin que esto les reste significado para quien las vive.</p>
+      <h4>Comunidad visible e invisible</h4>
+      <p>Para quienes practican en comunidad —grupos de oración, comunidades religiosas, o incluso grupos de apoyo no religiosos que comparten prácticas similares— existe una capa adicional: saber que otras personas, en otros momentos y lugares, sostienen intenciones similares o piensan en uno. Esta "comunidad invisible" puede reforzar la sensación de pertenencia.</p>
+      <p>Para quienes practican en soledad, sin una comunidad formal, vale la pena notar que la sensación de conexión no depende exclusivamente de la interacción activa con otras personas en ese mismo momento.</p>
+      <h4>Para reflexionar</h4>
+      <p>¿Hay alguna idea, persona, tradición o fuerza que, al traerla a la mente, te genere una sensación de acompañamiento? No necesita tener una forma religiosa particular.</p>
+    `
+  },
+  {
+    id:9,
+    title:"Cuando no funciona: manejo de la duda y el silencio",
+    summary:"Qué hacer cuando la práctica deja de 'sentirse' como antes.",
+    html:`
+      <h4>Los momentos neutros también cuentan</h4>
+      <p>Es común que, después de un tiempo, una práctica que solía sentirse significativa empiece a sentirse "neutra": ni mal, ni especialmente bien. Esto no significa que la práctica haya dejado de funcionar ni que algo esté mal con vos.</p>
+      <p>Permitir que algunos momentos simplemente "no se sientan" de ninguna manera particular —sin monitorear constantemente si "está funcionando"— es parte de sostener una práctica a largo plazo.</p>
+      <h4>Cuándo buscar apoyo profesional</h4>
+      <p>Si la desconexión, la tristeza o la desesperanza se vuelven persistentes, intensas o interfieren significativamente con tu vida diaria —el sueño, las relaciones, el trabajo, el cuidado personal— prácticas como la oración o las afirmaciones pueden ser un complemento valioso, pero <b>no sustituyen el apoyo profesional de salud mental</b>.</p>
+      <p>Si notás que esto te pasa, considerá que puede ser una señal para buscar el apoyo de un profesional de salud mental, además de —no en lugar de— cualquier práctica personal que encuentres significativa.</p>
+      <h4>Para reflexionar</h4>
+      <p>¿Atravesaste alguna vez un período en el que una práctica que normalmente te resultaba significativa —oración, meditación, ejercicio, escritura— dejó de "sentirse" como antes? ¿Qué hiciste en ese momento? ¿Qué te hubiera sido útil escuchar entonces?</p>
+      <h4>Práctica del capítulo</h4>
+      <p>Esta semana, durante tu práctica diaria, permití que algunos momentos simplemente "no se sientan" de ninguna manera particular. Practicá el gesto (la afirmación, la pausa, la gratitud) sin monitorear constantemente si "está funcionando". Al final de la semana, sin juzgar los días individuales, observá el conjunto: ¿notás alguna diferencia entre el inicio y el final de la semana, aunque los días intermedios se hayan sentido neutros?</p>
+    `
+  },
+  {
+    id:10,
+    title:"Tu práctica diaria: diseñando tu ritual",
+    summary:"Armá tu ritual mínimo con los cuatro elementos del libro.",
+    html:`
+      <h4>Lo que recorrimos</h4>
+      <p>A lo largo de este libro exploramos, capítulo a capítulo, ideas centrales de la oración y las afirmaciones positivas —tal como las describieron Peale y Laubach— a la luz de lo que la ciencia actual entiende sobre la mente y el cuerpo: la repetición y la neuroplasticidad, la frecuencia frente a la duración, la visualización como ensayo, el lenguaje interno, la entrega después del esfuerzo, la gratitud específica y la sensación de comunidad.</p>
+      <h4>Tu ritual diario mínimo: cuatro elementos</h4>
+      <div class="practice-steps" style="margin:14px 0;">
+        <div class="practice-step"><div class="step-num">1</div><div class="step-text"><b>Frase ancla al despertar</b> (Cap. 3): una palabra o frase breve que represente el estado que querés cultivar hoy.</div></div>
+        <div class="practice-step"><div class="step-num">2</div><div class="step-text"><b>Pausas breves de afirmación</b> durante el día (Cap. 2 y 3): repetir tu afirmación o ancla en transiciones naturales.</div></div>
+        <div class="practice-step"><div class="step-num">3</div><div class="step-text"><b>Visualización de un proceso</b> (Cap. 4): un minuto imaginando, paso a paso, una situación que querés atravesar con calma.</div></div>
+        <div class="practice-step"><div class="step-num">4</div><div class="step-text"><b>Registro nocturno de gratitud específica</b> (Cap. 7): una o dos cosas concretas por las que te sentís agradecido/a hoy.</div></div>
+      </div>
+      <h4>Práctica del capítulo</h4>
+      <p>Andá a la sección "Mi ritual" de esta app, definí tu frase ancla y empezá a marcar los cuatro elementos cada día. No necesitás hacerlo perfecto: la consistencia importa más que la intensidad.</p>
+    `
+  }
+];
+
+const concepts = [
+  {title:"Neuroplasticidad", text:"La capacidad del cerebro de reorganizar sus conexiones neuronales en respuesta a la experiencia, el aprendizaje y la repetición. No es 'pensar y listo': es práctica sostenida que modifica patrones reales de activación cerebral. (Capítulo 1)"},
+  {title:'El "hábito del minuto"', text:'Idea central de Frank Laubach: en vez de orar en un único momento largo, volvés la atención a tu práctica durante segundos, muchas veces al día, aprovechando transiciones que ya existen (esperar, caminar, hacer una fila). "No se trata de orar más tiempo, sino de orar más seguido." (Capítulo 3)'},
+  {title:"Afirmación honesta vs. positivismo vacío", text:"Una afirmación útil no niega la dificultad presente: la reconoce y, al mismo tiempo, dirige la atención hacia una capacidad o recurso interno. 'Tengo un problema, y tengo la capacidad de afrontarlo paso a paso' es distinto de 'no tengo ningún problema'. (Capítulo 2)"},
+  {title:"Imaginería motora", text:"Cuando imaginás con detalle realizar una acción, se activan áreas motoras del cerebro de forma similar a cuando la realizás de verdad. Por eso visualizar un proceso —no solo el resultado final— funciona como un ensayo mental real. (Capítulo 4)"},
+  {title:"La segunda voz", text:"Frente a un pensamiento autocrítico, no se trata de negarlo o suprimirlo, sino de reconocerlo y ofrecer deliberadamente una segunda voz, honesta pero más equilibrada, que incluya un recurso o un aprendizaje posible. (Capítulo 5)"},
+  {title:"El gesto de cierre", text:"Una respiración profunda y una frase breve ('esto ya está hecho por ahora') para practicar la entrega después del esfuerzo, sin necesidad de que el pensamiento desaparezca por completo. (Capítulo 6)"},
+  {title:"Gratitud específica", text:"Nombrar deliberadamente algo concreto por lo que te sentís agradecido/a —no una idea genérica— parece tener un efecto más fuerte sobre el estado de ánimo y el bienestar que la gratitud vaga. (Capítulo 7)"},
+  {title:"Comunidad invisible", text:"Saber que otras personas, en otros lugares y momentos, sostienen intenciones similares a las tuyas puede reforzar tu sensación de pertenencia y conexión, incluso si practicás en soledad. (Capítulo 8)"}
+];
+
+const quotes = [
+  {text:"Cambia tus pensamientos y cambiarás tu mundo.", attr:"Inspirado en Norman Vincent Peale · Cap. 1"},
+  {text:"No se trata de fingir que el problema no existe, sino de recordarte, con palabras, que tenés recursos para enfrentarlo.", attr:"Inspirado en el enfoque de afirmaciones de Peale · Cap. 2"},
+  {text:"No se trata de orar más tiempo, sino de orar más seguido.", attr:"Inspirado en la práctica del minuto de Frank Laubach · Cap. 3"},
+  {text:"Hablá contigo mismo como hablarías con alguien a quien querés ayudar, no como hablarías con un enemigo al que querés derrotar.", attr:"Inspirado en el enfoque de Peale sobre el diálogo interno · Cap. 5"},
+  {text:"No importa cuán sola se sienta una persona; en el momento de la oración, hay una sensación de compañía que cambia el peso de lo que se carga.", attr:"Inspirado en la experiencia de presencia descrita por Laubach · Cap. 8"}
+];
+
+const testQuestions = [
+  {
+    q:"¿Cuál de estas frases te resulta más familiar últimamente?",
+    options:[
+      {label:"Mi diálogo interno es bastante autocrítico.", type:"lenguaje"},
+      {label:"Tengo agendas muy ocupadas, no logro sostener hábitos largos.", type:"frecuencia"},
+      {label:"Me cuesta soltar cosas que ya hice todo lo posible por resolver.", type:"entrega"},
+      {label:"Siento que doy todo por sentado, no me detengo a notar lo bueno.", type:"gratitud"}
+    ]
+  },
+  {
+    q:"Cuando algo te preocupa, ¿qué tiende a pasar?",
+    options:[
+      {label:"Lo repaso una y otra vez en mi cabeza.", type:"entrega"},
+      {label:"Me digo cosas como 'no debería sentirme así'.", type:"lenguaje"},
+      {label:"Imagino el peor escenario posible con mucho detalle.", type:"visualizacion"},
+      {label:"Trato de distraerme y no pensarlo.", type:"frecuencia"}
+    ]
+  },
+  {
+    q:"¿Qué te gustaría sentir más seguido en tu día a día?",
+    options:[
+      {label:"Una pausa de calma, aunque sea breve.", type:"frecuencia"},
+      {label:"Más compasión hacia mí mismo/a.", type:"lenguaje"},
+      {label:"Sensación de acompañamiento o conexión.", type:"comunidad"},
+      {label:"Reconocer lo bueno que ya tengo.", type:"gratitud"}
+    ]
+  }
+];
+
+const testResults = {
+  lenguaje:{title:"Tu prioridad: el lenguaje interno", text:"Te conviene empezar por el Capítulo 5 (El lenguaje que usás contigo mismo). Practicá identificar tu diálogo interno autocrítico y ofrecerle, conscientemente, una 'segunda voz' más equilibrada. No se trata de mentirte, sino de ampliar la mirada."},
+  frecuencia:{title:"Tu prioridad: frecuencia, no duración", text:"El Capítulo 3 (La oración como entrenamiento mental) es tu punto de partida. El 'hábito del minuto' de Laubach está pensado exactamente para agendas ocupadas: micro-pausas en transiciones que ya existen en tu día, sin necesidad de encontrar tiempo extra."},
+  entrega:{title:"Tu prioridad: soltar el control", text:"Te conviene revisar el Capítulo 6 (Soltar el control: del esfuerzo a la entrega). El 'gesto de cierre' —una respiración y una frase breve— te puede ayudar a marcar cuándo ya hiciste lo que podías hacer por ahora."},
+  visualizacion:{title:"Tu prioridad: visualizar el proceso", text:"El Capítulo 4 (Visualizar es construir) es para vos. En lugar de imaginar escenarios temidos con detalle, podés entrenar a tu cerebro imaginando, con el mismo nivel de detalle, el proceso de atravesar la situación con calma."},
+  gratitud:{title:"Tu prioridad: gratitud específica", text:"Arrancá por el Capítulo 7 (Gratitud como práctica neurológica). Un registro nocturno de una o dos cosas concretas por las que te sentís agradecido/a puede ser tu primer paso, y podés empezarlo hoy mismo en la sección Diario."},
+  comunidad:{title:"Tu prioridad: la comunidad invisible", text:"Te conviene leer el Capítulo 8 (La comunidad invisible). Explorá qué idea, tradición, persona o fuerza, al traerla a la mente, te genera una sensación de acompañamiento."}
+};
+
+const ritualItems = [
+  {id:"r1", text:"Frase ancla al despertar — la dije o pensé al levantarme"},
+  {id:"r2", text:"Pausa de afirmación durante el día — al menos una transición"},
+  {id:"r3", text:"Visualización de un proceso — un minuto, una situación próxima"},
+  {id:"r4", text:"Gratitud nocturna específica — registrada en el Diario"}
+];
+
+const badges = [
+  {id:"b_primer_capitulo", icon:"📖", title:"Primer paso", desc:"Leíste tu primer capítulo", check:s=>s.readChapters.length>=1},
+  {id:"b_mitad", icon:"🌓", title:"A mitad de camino", desc:"Leíste 5 capítulos", check:s=>s.readChapters.length>=5},
+  {id:"b_completo", icon:"🌌", title:"Puente completo", desc:"Leíste los 10 capítulos", check:s=>s.readChapters.length>=10},
+  {id:"b_diario", icon:"📔", title:"Primera entrada", desc:"Escribiste en tu diario", check:s=>s.journal.length>=1},
+  {id:"b_diario5", icon:"✨", title:"Voz constante", desc:"5 entradas en el diario", check:s=>s.journal.length>=5},
+  {id:"b_ritual", icon:"🌅", title:"Ritual armado", desc:"Definiste tu frase ancla", check:s=>!!s.anchorPhrase},
+  {id:"b_dia1", icon:"🔥", title:"Primer día", desc:"Completaste tu primer día de ritual", check:s=>s.trackedDays.length>=1},
+  {id:"b_racha3", icon:"🌟", title:"Racha de 3", desc:"3 días consecutivos completados", check:s=>getStreak(s)>=3},
+  {id:"b_racha7", icon:"💫", title:"Una semana", desc:"7 días consecutivos completados", check:s=>getStreak(s)>=7},
+  {id:"b_test", icon:"🎯", title:"Autoconocimiento", desc:"Completaste el test", check:s=>s.testDone},
+  {id:"b_21", icon:"🏆", title:"21 días", desc:"Completaste el programa de 21 días", check:s=>s.trackedDays.length>=21}
+];
+
+/* ===================== STATE ===================== */
+function loadState(){
+  const def = {
+    theme:"dark",
+    readChapters:[],
+    journal:[],
+    anchorPhrase:"",
+    ritualToday:{r1:false,r2:false,r3:false,r4:false},
+    ritualDate:todayStr(),
+    trackedDays:[],
+    testDone:false,
+    testAnswers:[],
+    welcomeSeen:false,
+    favoritas:[]
+  };
+  try{
+    const saved = JSON.parse(localStorage.getItem('app_ciencia_oracion')||'null');
+    if(saved) return Object.assign(def, saved);
+  }catch(e){}
+  return def;
+}
+function saveState(){
+  localStorage.setItem('app_ciencia_oracion', JSON.stringify(state));
+}
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+let state = loadState();
+
+/* reset ritual checklist if it's a new day */
+if(state.ritualDate !== todayStr()){
+  state.ritualToday = {r1:false,r2:false,r3:false,r4:false};
+  state.ritualDate = todayStr();
+  saveState();
+}
+
+/* ===================== INIT ===================== */
+document.addEventListener('DOMContentLoaded', () => {
+  buildStars();
+  applyTheme();
+  buildChapters();
+  buildConcepts();
+  buildQuotes();
+  buildTest();
+  buildJournal();
+  buildRitual();
+  buildTracker();
+  buildBadges();
+  buildFrasesCards();
+  buildFavoritas();
+  updateProgress();
+
+  if(state.welcomeSeen){
+    document.getElementById('welcome').classList.add('hidden');
+  }
+
+  document.getElementById('anchorPhrase').value = state.anchorPhrase || "";
+});
+
+function buildStars(){
+  const container = document.getElementById('stars');
+  for(let i=0;i<60;i++){
+    const s = document.createElement('div');
+    s.className='star';
+    const size = Math.random()*2.5+1;
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = Math.random()*100+'%';
+    s.style.animationDelay = (Math.random()*4)+'s';
+    container.appendChild(s);
+  }
+}
+
+function closeWelcome(){
+  document.getElementById('welcome').classList.add('hidden');
+  state.welcomeSeen = true;
+  saveState();
+}
+
+/* ===================== THEME ===================== */
+function applyTheme(){
+  if(state.theme==='light'){
+    document.documentElement.setAttribute('data-theme','light');
+    document.getElementById('themeIcon').textContent='☀️';
+    document.getElementById('themeLabel').textContent='Modo día';
+  }else{
+    document.documentElement.removeAttribute('data-theme');
+    document.getElementById('themeIcon').textContent='🌙';
+    document.getElementById('themeLabel').textContent='Modo noche';
+  }
+}
+function toggleTheme(){
+  state.theme = state.theme==='light' ? 'dark' : 'light';
+  applyTheme();
+  saveState();
+}
+
+/* ===================== NAVIGATION ===================== */
+function goTo(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+  closeReading();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===================== PROGRESS ===================== */
+function updateProgress(){
+  // weight: chapters 50%, ritual setup 10%, journal 10%, test 10%, tracker 20%
+  const chPct = (state.readChapters.length/10)*50;
+  const ritualPct = state.anchorPhrase ? 10 : 0;
+  const journalPct = Math.min(state.journal.length,5)/5*10;
+  const testPct = state.testDone ? 10 : 0;
+  const trackPct = Math.min(state.trackedDays.length,21)/21*20;
+  const total = Math.round(chPct+ritualPct+journalPct+testPct+trackPct);
+  document.getElementById('progressFill').style.width = total+'%';
+  document.getElementById('progressPct').textContent = total+'%';
+  document.getElementById('progressFillMobile').style.width = total+'%';
+  document.getElementById('progressPctMobile').textContent = total+'%';
+}
+
+/* ===================== CHAPTERS ===================== */
+function buildChapters(){
+  const grid = document.getElementById('chapterGrid');
+  grid.innerHTML='';
+  chapters.forEach(ch=>{
+    const read = state.readChapters.includes(ch.id);
+    const card = document.createElement('div');
+    card.className='chapter-card clickable';
+    card.onclick = ()=>openChapter(ch.id);
+    card.innerHTML = `
+      <div class="chapter-num">${String(ch.id).padStart(2,'0')}</div>
+      <h3>${ch.title}</h3>
+      <p>${ch.summary}</p>
+      ${read ? '<div class="chapter-status">✓ Leído</div>' : ''}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openChapter(id){
+  const ch = chapters.find(c=>c.id===id);
+  document.getElementById('chapterGrid').style.display='none';
+  document.getElementById('readingPanel').classList.add('open');
+  document.getElementById('readingContent').innerHTML =
+    `<div class="section-eyebrow">Capítulo ${ch.id}</div><h2 class="section-title">${ch.title}</h2>` + ch.html;
+
+  if(!state.readChapters.includes(id)){
+    state.readChapters.push(id);
+    saveState();
+    updateProgress();
+    checkBadges();
+    buildBadges();
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function closeReading(){
+  document.getElementById('readingPanel').classList.remove('open');
+  document.getElementById('chapterGrid').style.display='grid';
+  buildChapters();
+}
+
+/* ===================== CONCEPTS ===================== */
+function buildConcepts(){
+  const list = document.getElementById('conceptsList');
+  list.innerHTML='';
+  concepts.forEach((c,i)=>{
+    const card = document.createElement('div');
+    card.className='card concept-card';
+    card.onclick = ()=>card.classList.toggle('open');
+    card.innerHTML = `
+      <div class="concept-head">
+        <h3>${c.title}</h3>
+        <span class="concept-arrow">▾</span>
+      </div>
+      <div class="concept-body">${c.text}</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+/* ===================== QUOTES ===================== */
+function buildQuotes(){
+  const list = document.getElementById('quotesList');
+  list.innerHTML='';
+  quotes.forEach(q=>{
+    const div = document.createElement('div');
+    div.className='quote-card';
+    div.innerHTML = `${q.text}<span class="quote-attr">${q.attr}</span>`;
+    list.appendChild(div);
+  });
+}
+
+/* ===================== TEST ===================== */
+let currentTestQ = 0;
+let testScores = {};
+
+function buildTest(){
+  currentTestQ = 0;
+  testScores = {};
+  document.getElementById('testResult').classList.remove('show');
+  renderTestQuestion();
+}
+
+function renderTestQuestion(){
+  const container = document.getElementById('testContainer');
+  if(currentTestQ >= testQuestions.length){
+    showTestResult();
+    return;
+  }
+  const q = testQuestions[currentTestQ];
+  container.innerHTML = `
+    <div class="test-card">
+      <div class="test-q">Pregunta ${currentTestQ+1} de ${testQuestions.length}</div>
+      <div class="test-q" style="font-weight:600;margin-bottom:16px;">${q.q}</div>
+      <div class="test-options">
+        ${q.options.map((o,i)=>`<button class="test-opt clickable" onclick="answerTest('${o.type}')">${o.label}</button>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function answerTest(type){
+  testScores[type] = (testScores[type]||0)+1;
+  currentTestQ++;
+  renderTestQuestion();
+}
+
+function showTestResult(){
+  document.getElementById('testContainer').innerHTML='';
+  let top = null, max=-1;
+  for(const k in testScores){
+    if(testScores[k]>max){max=testScores[k];top=k;}
+  }
+  if(!top) top='frecuencia';
+  const r = testResults[top];
+  document.getElementById('testResultTitle').textContent = r.title;
+  document.getElementById('testResultText').textContent = r.text;
+  document.getElementById('testResult').classList.add('show');
+
+  state.testDone = true;
+  saveState();
+  updateProgress();
+  checkBadges();
+  buildBadges();
+}
+
+function resetTest(){
+  buildTest();
+}
+
+/* ===================== JOURNAL ===================== */
+function saveJournal(){
+  const text = document.getElementById('journalText').value.trim();
+  if(!text) return;
+  state.journal.unshift({date: new Date().toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'}), text});
+  document.getElementById('journalText').value='';
+  saveState();
+  buildJournal();
+  updateProgress();
+  checkBadges();
+  buildBadges();
+  flash('journalFlash');
+}
+
+function buildJournal(){
+  const list = document.getElementById('journalList');
+  if(state.journal.length===0){
+    list.innerHTML = `<div class="empty-state"><span class="emoji">📔</span>Todavía no escribiste ninguna entrada. Empezá hoy con algo simple: una cosa concreta por la que te sientas agradecido/a.</div>`;
+    return;
+  }
+  list.innerHTML = state.journal.map(j=>`
+    <div class="journal-entry">
+      <div class="journal-date">${j.date}</div>
+      <div>${escapeHtml(j.text)}</div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function flash(id){
+  const el = document.getElementById(id);
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 1800);
+}
+
+/* ===================== RITUAL ===================== */
+function saveAnchor(){
+  state.anchorPhrase = document.getElementById('anchorPhrase').value.trim();
+  saveState();
+  updateProgress();
+  checkBadges();
+  buildBadges();
+  flash('anchorFlash');
+}
+
+function buildRitual(){
+  const list = document.getElementById('ritualChecklist');
+  list.innerHTML = ritualItems.map(item=>{
+    const done = state.ritualToday[item.id];
+    return `
+      <div class="check-item ${done?'done':''} clickable" onclick="toggleRitual('${item.id}')">
+        <div class="check-box">${done?'✓':''}</div>
+        <span class="check-text">${item.text}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleRitual(id){
+  state.ritualToday[id] = !state.ritualToday[id];
+  state.ritualDate = todayStr();
+  saveState();
+  buildRitual();
+}
+
+/* ===================== TRACKER ===================== */
+function getStreak(s){
+  // count consecutive days up to and including today
+  let streak=0;
+  let d = new Date();
+  while(true){
+    const ds = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    if(s.trackedDays.includes(ds)){
+      streak++;
+      d.setDate(d.getDate()-1);
+    }else{
+      break;
+    }
+  }
+  return streak;
+}
+
+function markToday(){
+  const t = todayStr();
+  if(!state.trackedDays.includes(t)){
+    state.trackedDays.push(t);
+    saveState();
+    buildTracker();
+    updateProgress();
+    checkBadges();
+    buildBadges();
+    document.getElementById('markTodayBtn').textContent='✓ Hoy completado';
+  }
+}
+
+function buildTracker(){
+  const t = todayStr();
+  document.getElementById('markTodayBtn').textContent = state.trackedDays.includes(t) ? '✓ Hoy completado' : 'Marcar hoy ✓';
+  document.getElementById('streakNum').textContent = getStreak(state);
+  document.getElementById('totalDays').textContent = Math.min(state.trackedDays.length,21);
+
+  const grid = document.getElementById('trackerGrid');
+  grid.innerHTML='';
+  const days = [];
+  const today = new Date();
+  for(let i=20;i>=0;i--){
+    const d = new Date(today);
+    d.setDate(d.getDate()-i);
+    days.push(d);
+  }
+  days.forEach(d=>{
+    const ds = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const done = state.trackedDays.includes(ds);
+    const div = document.createElement('div');
+    div.className = 'tracker-day' + (done ? ' done' : '');
+    div.innerHTML = `<div class="d-num">${d.getDate()}</div><div>${done?'✓':'·'}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+/* ===================== FRASES DE SANACIÓN ===================== */
+const frasesDB = {
+  manana:[
+    {label:"Frase Principal", text:"No te impacientes. La paz de [S] te está tocando."},
+    {label:"Afirmación de Liberación", text:"Renuncio en este momento a mi exaltación nerviosa. Ya se aleja de mí. Estoy en paz."},
+    {label:"Expansión", text:"Cada mañana tenemos dos opciones: sentirnos bien o sentirnos mal. Hoy elijo sentirme bien. Hoy elijo la paz."},
+    {label:"Intención del Día", text:"Cambia tus pensamientos y cambiarás tu mundo. Hoy pienso en paz, abundancia y amor."},
+    {label:"Conexión Espiritual", text:"Lo que la mente puede concebir y creer, y el corazón desear, puedo conseguirlo. Hoy creo en mi sanación."}
+  ],
+  pausa:[
+    {label:"Cuando sientas prisa o ansiedad", text:"No te impacientes. La paz de [S] te está tocando en este momento."},
+    {label:"Cuando sientas nerviosismo", text:"Renuncio en este momento a mi exaltación nerviosa. Ya se aleja de mí. Respiro profundo. Estoy en paz."},
+    {label:"Cuando sientas miedo", text:"El miedo no es una razón para abandonar, es solo una excusa. Suelto el miedo y confío en [S]."},
+    {label:"Cuando sientas presión", text:"No hay prisa. Todo está en su tiempo perfecto. La paz de [S] me envuelve ahora."},
+    {label:"Cuando necesités claridad", text:"Hago una pausa. Respiro. Conecto con la sabiduría de [S]. La respuesta está dentro de mí."}
+  ],
+  obstaculos:[
+    {label:"Ante la adversidad", text:"No te preocupes por los obstáculos en tu camino, conviértelos en escalones para alcanzar tus metas."},
+    {label:"Ante el desánimo", text:"Siempre es demasiado pronto para darse por vencido. [S] me sostiene."},
+    {label:"Ante la incertidumbre", text:"La fe es la fuerza más poderosa que opera en la humanidad. Cuando se encuentra en lo más profundo de tu ser, nada puede derrumbarte."},
+    {label:"Ante la limitación", text:"No hay límites para lo que puedo lograr si creo en mí mismo y en los sueños que [S] ha puesto en mi corazón."},
+    {label:"Ante el fracaso", text:"Apunto a la luna. Aunque falle, aterrizaré entre las estrellas. Cada paso me acerca a mi sanación."}
+  ],
+  fe:[
+    {label:"Afirmación de fe profunda", text:"La fe es la fuerza que transforma los deseos en realidad. Creo en mi sanación. Creo en [S]."},
+    {label:"Poder de la oración", text:"El poder de la oración es incalculable. No subestimes su capacidad para cambiar tu vida. Hoy oro por mi sanación."},
+    {label:"Confianza en lo divino", text:"Lo que [S] ha comenzado en mí, lo completará. Confío en el proceso de mi sanación."},
+    {label:"Entrega y paz", text:"Entrego mis preocupaciones a [S]. Yo suelto. Yo confío. Estoy en paz."}
+  ],
+  autoestima:[
+    {label:"Confianza fundamental", text:"Cree en ti, ten fe en tus habilidades. Sin una humilde pero razonable confianza en tu poder, no podés ser exitoso ni feliz."},
+    {label:"Reconocimiento del poder personal", text:"La clave del éxito está en creer en vos mismo incluso cuando nadie más lo hace. Yo creo en mí. Yo confío en mi poder."},
+    {label:"Valoración personal", text:"Soy digno/a de sanación. Soy digno/a de amor. Soy digno/a de abundancia. [S] me valida."},
+    {label:"Liberación de la crítica", text:"Suelto la crítica hacia mí mismo/a. Suelto la culpa. Suelto la vergüenza. Hoy me amo incondicionalmente."}
+  ],
+  abundancia:[
+    {label:"Magnetismo positivo", text:"El optimismo es el imán del éxito. Si me mantengo positivo/a, atraigo cosas positivas hacia mí. Hoy atraigo sanación, paz y amor."},
+    {label:"Transformación de energía", text:"Lo que pienso, creo. Lo que creo, atraigo. Hoy pienso en salud, en paz, en abundancia."},
+    {label:"Poder del entusiasmo", text:"Hay una magia real en el entusiasmo. Hoy activo mi entusiasmo por la vida."},
+    {label:"Liberación de limitaciones", text:"Vivo la vida y olvido mis limitaciones. Vivo plenamente. Vivo en paz. Vivo en [S]."}
+  ],
+  noche:[
+    {label:"Gratitud y liberación", text:"Agradezco este día. Agradezco las lecciones. Agradezco a [S] por mi sanación."},
+    {label:"Soltar lo vivido", text:"Suelto todo lo que sucedió hoy. Suelto la preocupación. Suelto el estrés. Desciendo en paz."},
+    {label:"Confianza en la noche", text:"Duermo en paz. Duermo protegido/a por [S]. Mi cuerpo se sana mientras descanso."},
+    {label:"Afirmación final", text:"Mañana despertaré renovado/a, en paz, lleno/a de fe en [S]. Así es."},
+    {label:"Bendición personal", text:"Que la paz de [S] guarde mi corazón y mi mente esta noche. Que mi sanación continúe mientras descanso."}
+  ]
+};
+
+let currentSpiritWord = 'Dios';
+let currentMoment = 'manana';
+
+function setSpiritWord(word, btn){
+  currentSpiritWord = word;
+  document.querySelectorAll('.spirit-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildFrasesCards();
+}
+
+function setMoment(moment, btn){
+  currentMoment = moment;
+  document.querySelectorAll('.moment-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildFrasesCards();
+}
+
+function buildFrasesCards(){
+  const frases = frasesDB[currentMoment] || [];
+  const container = document.getElementById('frasesCards');
+  container.innerHTML = frases.map((f,i)=>{
+    const textoFinal = f.text.replace(/\[S\]/g, currentSpiritWord);
+    const favKey = currentMoment+'|'+i+'|'+currentSpiritWord;
+    const isFav = state.favoritas && state.favoritas.some(fv=>fv.key===favKey);
+    return `
+      <div class="frase-card">
+        <div class="frase-label">${f.label}</div>
+        <div class="frase-text">"${textoFinal}"</div>
+        <div class="frase-actions">
+          <button class="fav-btn clickable ${isFav?'saved':''}" onclick="toggleFavorita('${escapeAttr(favKey)}','${escapeAttr(textoFinal)}','${escapeAttr(f.label)}')">
+            ${isFav ? '⭐ Guardada' : '☆ Guardar favorita'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeAttr(str){
+  return str.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+}
+
+function toggleFavorita(key, texto, label){
+  if(!state.favoritas) state.favoritas=[];
+  const idx = state.favoritas.findIndex(f=>f.key===key);
+  if(idx>=0){
+    state.favoritas.splice(idx,1);
+  } else {
+    state.favoritas.push({key, texto, label, momento:currentMoment, palabra:currentSpiritWord});
+  }
+  saveState();
+  buildFrasesCards();
+  buildFavoritas();
+}
+
+function buildFavoritas(){
+  const list = document.getElementById('favoritasList');
+  if(!state.favoritas || state.favoritas.length===0){
+    list.innerHTML = `<div class="empty-state"><span class="emoji">⭐</span>Todavía no guardaste ninguna frase. Cuando encuentres una que te llegue, tocá "Guardar favorita".</div>`;
+    return;
+  }
+  list.innerHTML = state.favoritas.map((f,i)=>`
+    <div class="fav-card">
+      <div class="fav-meta">${f.label} · ${f.palabra}</div>
+      <div class="fav-t">"${f.texto}"</div>
+      <button class="del-fav clickable" onclick="deleteFavorita(${i})">✕ Quitar</button>
+    </div>
+  `).join('');
+}
+
+function deleteFavorita(i){
+  state.favoritas.splice(i,1);
+  saveState();
+  buildFavoritas();
+  buildFrasesCards();
+}
+
+/* ===================== BADGES ===================== */
+function checkBadges(){
+  saveState();
+}
+
+function buildBadges(){
+  const grid = document.getElementById('badgeGrid');
+  grid.innerHTML = badges.map(b=>{
+    const unlocked = b.check(state);
+    return `
+      <div class="badge ${unlocked?'unlocked':''}">
+        <span class="b-icon">${b.icon}</span>
+        <h4>${b.title}</h4>
+        <p>${unlocked ? b.desc : '🔒 ' + b.desc}</p>
+      </div>
+    `;
+  }).join('');
+}
+</script>
+</body>
+</html>
